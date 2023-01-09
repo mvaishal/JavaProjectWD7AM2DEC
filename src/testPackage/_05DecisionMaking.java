@@ -10,6 +10,7 @@ import java.util.Scanner;
     code
   }
  */
+//take three number input from user and print the max number from that.
 public class _05DecisionMaking {
 static	Scanner sc = new Scanner(System.in);
 	public static void main(String[] args) {
