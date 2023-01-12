@@ -127,7 +127,7 @@ static	Scanner sc = new Scanner(System.in);
 	public static void combineSwitchCase() {
 		System.out.println("Enter first three character of month name");
 		 String month= sc.next();
-		 switch (month) {
+		 switch (month.toLowerCase()) {
 		case "jan":
 		case "mar":
 		case "may":
