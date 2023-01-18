@@ -13,6 +13,8 @@ public class Test {
 	//	obj1.add1(12, 15);
 		
 		obj1.mul(15, 20);
+		
+		obj1.divide(20, 10);
 	}
 	
 

@@ -14,7 +14,7 @@ import java.util.Scanner;
 public class _05DecisionMaking {
 static	Scanner sc = new Scanner(System.in);
 	public static void main(String[] args) {
-		combineSwitchCase();
+		loanapply();
 	}
 
 	public static void loanapply() {
