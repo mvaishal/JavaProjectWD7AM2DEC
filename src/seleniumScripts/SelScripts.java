@@ -1,42 +1,101 @@
 package seleniumScripts;
 
+import java.io.File;
+import java.io.IOException;
+import java.time.Duration;
+import java.util.List;
+
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.support.ui.Select;
 
 public class SelScripts {
 	WebDriver driver;
 
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws InterruptedException, IOException {
 		SelScripts ss = new SelScripts();
 		ss.launchBrowser("chrome");
-		ss.handlemouseClick();
+		ss.scrollwebPage();
 	}
-	
+	public void scrollwebPage() {
+		driver.get("http://www.tizag.com/javascriptT/javascriptalert.php");
+	  	JavascriptExecutor js= ((JavascriptExecutor)driver);
+	  	js.executeScript("window.scrollBy(0,800);");
+	}
+
+	public void captureScreenShot() throws IOException {
+		driver.get("https://jqueryui.com/droppable/");
+		// switching into frame
+		driver.switchTo().frame(0);
+		WebElement drag = driver.findElement(By.id("draggable"));
+		WebElement drop = driver.findElement(By.id("droppable"));
+		File file = drop.getScreenshotAs(OutputType.FILE);
+		FileHandler.copy(file, new File("D:\\screenshot\\Beforedrop.jpeg"));
+		Actions action = new Actions(driver);
+		action.dragAndDrop(drag, drop).perform();
+		// capture screenshot
+		file = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+		FileHandler.copy(file, new File("D:\\screenshot\\dd.png"));
+
+		file = drop.getScreenshotAs(OutputType.FILE);
+		FileHandler.copy(file, new File("D:\\screenshot\\Afterdrop.jpeg"));
+
+	}
+
+	public void handleDropDown() throws InterruptedException {
+		driver.navigate().to("https://www.facebook.com/");
+		WebElement createAccbtn = driver.findElement(By.xpath("//a[contains(@id,'u_0_0_')]"));
+		createAccbtn.click();
+
+		WebElement month = driver.findElement(By.id("month"));
+		Select select = new Select(month);
+		String defaultoption = select.getFirstSelectedOption().getText();
+		System.out.println(defaultoption);
+
+		System.out.println("======");
+		List<WebElement> alloption = select.getOptions();
+		System.out.println("Number of option: " + alloption.size());
+		alloption.forEach(x -> {
+			System.out.println(x.getText());
+		});
+		select.selectByIndex(0);
+		Thread.sleep(1000);
+		select.selectByValue("8");
+		Thread.sleep(1000);
+		select.selectByVisibleText("Dec");
+		System.out.println(select.isMultiple());
+
+	}
+
 	public void handlemouseClick() {
-	driver.navigate().to("https://bonigarcia.dev/selenium-webdriver-java/dropdown-menu.html");
-	//perform leftclick
-	WebElement leftclickele= driver.findElement(By.id("my-dropdown-1"));
-	leftclickele.click();
-	
-	//rightclick contextclick
-	WebElement rightclickele= driver.findElement(By.id("my-dropdown-2"));
-	Actions action = new Actions(driver);
-	action.contextClick(rightclickele).perform();
-	
-	//doubleclick
-	WebElement doubleclickele= driver.findElement(By.id("my-dropdown-3"));
-	action.doubleClick(doubleclickele).perform();
-	
-	//select option from context menu
-	WebElement contextmenu= driver.findElement(By.id("context-menu-3"));
-	action.moveToElement(contextmenu).sendKeys(Keys.ARROW_DOWN).click().build().perform();
-	
+		driver.navigate().to("https://bonigarcia.dev/selenium-webdriver-java/dropdown-menu.html");
+		// perform leftclick
+		WebElement leftclickele = driver.findElement(By.id("my-dropdown-1"));
+		leftclickele.click();
+
+		// rightclick contextclick
+		WebElement rightclickele = driver.findElement(By.id("my-dropdown-2"));
+		Actions action = new Actions(driver);
+		action.contextClick(rightclickele).perform();
+
+		// doubleclick
+		WebElement doubleclickele = driver.findElement(By.id("my-dropdown-3"));
+		action.doubleClick(doubleclickele).perform();
+
+		// select option from context menu
+		WebElement contextmenu = driver.findElement(By.id("context-menu-3"));
+		action.moveToElement(contextmenu).sendKeys(Keys.ARROW_DOWN).click().build().perform();
+
 	}
 
 	public void dragandDrop() {
@@ -45,13 +104,13 @@ public class SelScripts {
 		driver.switchTo().frame(0);
 		WebElement drag = driver.findElement(By.id("draggable"));
 		WebElement drop = driver.findElement(By.id("droppable"));
-		
+
 		Actions action = new Actions(driver);
-     //  action.clickAndHold(drag).moveToElement(drop).release().build().perform();
+		// action.clickAndHold(drag).moveToElement(drop).release().build().perform();
 		action.dragAndDrop(drag, drop).perform();
-		
-		//handling slider
-	//	action.clickAndHolddrop).moveByOffset(0, 0).build().perform();
+
+		// handling slider
+		// action.clickAndHolddrop).moveByOffset(0, 0).build().perform();
 	}
 
 	public void handleFrame() {
@@ -64,8 +123,7 @@ public class SelScripts {
 		driver.switchTo().defaultContent();
 		WebElement img = driver.findElement(By.xpath("//a[@href='/']"));
 		System.out.println(img.isDisplayed());
-		
-		
+
 	}
 
 	public void handleModalWindow() throws InterruptedException {
@@ -166,6 +224,7 @@ public class SelScripts {
 		}
 
 		driver.manage().window().maximize();
+		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 
 	}
 }
