@@ -25,12 +25,57 @@ public class SelScripts {
 	public static void main(String[] args) throws InterruptedException, IOException {
 		SelScripts ss = new SelScripts();
 		ss.launchBrowser("chrome");
-		ss.scrollwebPage();
+		ss.getalllinksofWebPage();
 	}
+	
+	public void getalllinksofWebPage() {
+		driver.get("https://jqueryui.com/tooltip/");
+		
+	 List<WebElement> alllinks=	driver.findElements(By.tagName("a"));
+	 System.out.println(alllinks.size());
+	 
+	 //links -options under widget section
+	 
+	 List<WebElement> widgetLink= driver.findElements(By.xpath("//div[@id='sidebar']/aside[2]/ul/li"));
+	
+	System.out.println("Links under widget:\n"+widgetLink.size());
+	
+	widgetLink.forEach(x->{
+		String text= x.getText();
+		System.out.println(text);
+	});
+	
+	
+	
+	}
+
+	
+	public void fileUpload() {
+		driver.get("https://bonigarcia.dev/selenium-webdriver-java/web-form.html");
+	 WebElement inputfile=	driver.findElement(By.name("my-file"));
+	 inputfile.sendKeys("D:\\sampletestcase\\Gurur99Bank_TestCase.xlsx");
+	}
+	public void handletooltip() {
+		driver.get("https://jqueryui.com/tooltip/");
+		driver.switchTo().frame(0);
+		WebElement age = driver.findElement(By.id("age"));
+
+		String tooltip = age.getAttribute("title");
+		System.out.println("Tooltip:\n"+tooltip);
+	}
+
 	public void scrollwebPage() {
 		driver.get("http://www.tizag.com/javascriptT/javascriptalert.php");
-	  	JavascriptExecutor js= ((JavascriptExecutor)driver);
-	  	js.executeScript("window.scrollBy(0,800);");
+
+		WebElement btn = driver.findElement(By.xpath("//input[@value='Confirmation Alert']"));
+		JavascriptExecutor js = ((JavascriptExecutor) driver);
+		// random scroll on a page
+		// js;.executeScript("window.scrollBy(0,800);");
+		// scroll to bring element into view
+		// js.executeAsyncScript("arguments[0].scrollIntoView();", btn);
+
+		// scroll till the pageheight
+		js.executeScript("window.scrollBy(0,document.body.scrollHeight);");
 	}
 
 	public void captureScreenShot() throws IOException {
@@ -43,10 +88,11 @@ public class SelScripts {
 		FileHandler.copy(file, new File("D:\\screenshot\\Beforedrop.jpeg"));
 		Actions action = new Actions(driver);
 		action.dragAndDrop(drag, drop).perform();
-		// capture screenshot
+		// capture screenshot of complete page
 		file = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 		FileHandler.copy(file, new File("D:\\screenshot\\dd.png"));
 
+		// capture screenshot of any webelement
 		file = drop.getScreenshotAs(OutputType.FILE);
 		FileHandler.copy(file, new File("D:\\screenshot\\Afterdrop.jpeg"));
 
