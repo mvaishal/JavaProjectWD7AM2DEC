@@ -5,8 +5,8 @@ Submission>> 13 Feb 2023
 Selenium Assignement 
 
 Launch Chrome
-Open "https://ecommerce-playground.lambdatest.io/index.php?route=common/home"
-Click on Myaccount >> Login	
+Open "https://ecommerce-playground.lambdatest.io/index.php?route=common/home" </br>
+Click on Myaccount >> Login	</br>
 Provide valid details
 click on login button
 Print all option from right menulist
