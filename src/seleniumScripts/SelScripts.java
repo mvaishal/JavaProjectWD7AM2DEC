@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.List;
+import java.util.Set;
 
 import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
@@ -13,11 +14,14 @@ import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.io.FileHandler;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class SelScripts {
 	WebDriver driver;
@@ -25,43 +29,119 @@ public class SelScripts {
 	public static void main(String[] args) throws InterruptedException, IOException {
 		SelScripts ss = new SelScripts();
 		ss.launchBrowser("chrome");
-		ss.getalllinksofWebPage();
-	}
-	
-	public void getalllinksofWebPage() {
-		driver.get("https://jqueryui.com/tooltip/");
-		
-	 List<WebElement> alllinks=	driver.findElements(By.tagName("a"));
-	 System.out.println(alllinks.size());
-	 
-	 //links -options under widget section
-	 
-	 List<WebElement> widgetLink= driver.findElements(By.xpath("//div[@id='sidebar']/aside[2]/ul/li"));
-	
-	System.out.println("Links under widget:\n"+widgetLink.size());
-	
-	widgetLink.forEach(x->{
-		String text= x.getText();
-		System.out.println(text);
-	});
-	
-	
-	
+		ss.explicitwait();
+		// ss.closeBrowser();
+
 	}
 
-	
+	public void explicitwait() {
+		driver.get("https://bonigarcia.dev/selenium-webdriver-java/loading-images.html");
+		// explicit wait
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+		wait.until(ExpectedConditions.presenceOfElementLocated((By.xpath("//p[contains(text(), 'Done')]"))));
+		WebElement doneText = driver.findElement(By.xpath("//p[contains(text(), 'Done')]"));
+
+		if (doneText.isDisplayed()) {
+			System.out.println("Page Loaded" + doneText.getText());
+		} else {
+			System.out.println("Page Not laoded");
+		}
+	}
+
+	public void closeBrowser() {
+
+		driver.close();
+	}
+
+	public void handlingCalender() {
+		// March 30 2024
+		driver.get("https://bonigarcia.dev/selenium-webdriver-java/web-form.html");
+		WebElement calInput = driver.findElement(By.xpath("//input[@name='my-date']"));
+		calInput.click();
+		String calTitle = driver.findElement(By.xpath("//div[@class = 'datepicker-days']/table/thead/tr[2]/th[2]"))
+				.getText();
+
+		System.out.println(calTitle);
+		String month = calTitle.split(" ")[0].trim();
+		String year = calTitle.split(" ")[1].trim();
+		// "2023"+1;
+		String nyear = String.valueOf(Integer.parseInt(year) + 1);
+
+		while (!(month.equals("March") && (year.equals(nyear)))) {
+			driver.findElement(By.xpath("//div[@class='datepicker-days']//th[@class='next'][normalize-space()='»']"))
+					.click();
+			calTitle = driver.findElement(By.xpath("//div[@class = 'datepicker-days']/table/thead/tr[2]/th[2]"))
+					.getText();
+			month = calTitle.split(" ")[0].trim();
+			year = calTitle.split(" ")[1].trim();
+		}
+
+		driver.findElement(By.xpath("//td[normalize-space()='30']")).click();
+
+	}
+
+	public void handlenewtabs() {
+		driver.get("https://www.naukri.com/");
+		driver.switchTo().newWindow(WindowType.TAB);
+		driver.get("https://resume.naukri.com/?fftid=100001");
+	}
+
+	public void handleMultiplewindows() {
+		driver.get("https://www.naukri.com/");
+		String mainwindowPage = driver.getWindowHandle();
+		System.out.println(driver.getCurrentUrl());
+		WebElement services = driver.findElement(By.xpath("//div[normalize-space()='Services']"));
+		services.click();
+		Set<String> allids = driver.getWindowHandles();
+		for (String id : allids) {
+			if (!id.equals(mainwindowPage)) {
+				driver.switchTo().window(id);
+				System.out.println(driver.getCurrentUrl());
+				driver.close();
+			}
+		}
+
+		driver.switchTo().window(mainwindowPage);
+		System.out.println(driver.getCurrentUrl());
+	}
+
+	public void agreetemscheckbox() {
+		driver.get("https://ecommerce-playground.lambdatest.io/index.php?route=account/register");
+		driver.findElement(By.xpath("//label[@for='input-agree']")).click();
+	}
+
+	public void getalllinksofWebPage() {
+		driver.get("https://jqueryui.com/tooltip/");
+
+		List<WebElement> alllinks = driver.findElements(By.tagName("a"));
+		System.out.println(alllinks.size());
+
+		// links -options under widget section
+
+		List<WebElement> widgetLink = driver.findElements(By.xpath("//div[@id='sidebar']/aside[2]/ul/li"));
+
+		System.out.println("Links under widget:\n" + widgetLink.size());
+
+		widgetLink.forEach(x -> {
+			String text = x.getText();
+			System.out.println(text);
+		});
+
+	}
+
 	public void fileUpload() {
 		driver.get("https://bonigarcia.dev/selenium-webdriver-java/web-form.html");
-	 WebElement inputfile=	driver.findElement(By.name("my-file"));
-	 inputfile.sendKeys("D:\\sampletestcase\\Gurur99Bank_TestCase.xlsx");
+		WebElement inputfile = driver.findElement(By.name("my-file"));
+		inputfile.sendKeys("D:\\sampletestcase\\Gurur99Bank_TestCase.xlsx");
 	}
+
 	public void handletooltip() {
 		driver.get("https://jqueryui.com/tooltip/");
 		driver.switchTo().frame(0);
 		WebElement age = driver.findElement(By.id("age"));
 
 		String tooltip = age.getAttribute("title");
-		System.out.println("Tooltip:\n"+tooltip);
+		System.out.println("Tooltip:\n" + tooltip);
 	}
 
 	public void scrollwebPage() {
@@ -270,7 +350,7 @@ public class SelScripts {
 		}
 
 		driver.manage().window().maximize();
-		driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
+		// driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
 
 	}
 }
