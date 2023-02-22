@@ -19,7 +19,7 @@ public class TestFunction extends Calculator {
 	public static String whatsYourname(String name) {
 		 return name;
 	}
-	
+	// This is for whats your name//
 	public void sayHello(String abc) {
 		System.out.println("Hello "+whatsYourname(abc));
 	}
